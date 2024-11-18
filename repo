@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Live Stream</title>
+    <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <h1>Live Stream Admin View</h1>
+    <div id="streams"></div>
+
+    <script>
+        const socket = io('http://localhost:4000', { query: { id: 'admin_user_id' } }); // Adding query for admin
+        const streamsDiv = document.getElementById('streams');
+
+        socket.on('liveStreamStarted', (data) => {
+            const userId = data.userId;
+            console.log(userId)
+
+            const peerConnection = new RTCPeerConnection({
+                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+            });
+
+            const remoteVideo = document.createElement('video');
+            remoteVideo.width = 640;
+            remoteVideo.height = 480;
+            remoteVideo.autoplay = true;
+            remoteVideo.controls = true;
+            streamsDiv.appendChild(remoteVideo);
+
+            peerConnection.ontrack = (event) => {
+                // console.log('Remote track received:', event.streams[0]);
+                remoteVideo.srcObject = event.streams[0];
+            };
+
+            // Admin's ICE candidate handling
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    console.log('Sending ICE candidate to user');
+                    socket.emit('iceCandidate', {
+                        candidate: event.candidate,
+                        target: userId,
+                        source: 'admin_user_id'
+                    });
+                }
+            };
+
+            // Handle incoming signals from the user (offer)
+            socket.on('signal', (data) => {
+                if (data.source === userId) {
+                    console.log('Received signal (offer) from user');
+                    peerConnection.setRemoteDescription(new RTCSessionDescription(data.signal))
+                        .then(() => {
+                            if (peerConnection.remoteDescription.type === 'offer') {
+                                return peerConnection.createAnswer();
+                            }
+                        })
+                        .then(answer => peerConnection.setLocalDescription(answer))
+                        .then(() => {
+                            console.log('Sending signal back to user');
+                            socket.emit('signal', { signal: peerConnection.localDescription, target: userId, source: 'admin_user_id' });
+                        })
+                        .catch(error => console.error('Error setting remote description or creating answer:', error));
+                }
+            });
+
+            // Handle incoming ICE candidates from the user
+            socket.on('iceCandidate', (data) => {
+                if (data.source === userId) {
+                    console.log('Received ICE candidate from user');
+                    peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate))
+                        .catch(error => console.error('Error adding received ice candidate from user', error));
+                }
+            });
+
+
+        });
+    </script>
+</body>
+
+</html>

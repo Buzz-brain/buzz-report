@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Live Stream</title>
+    <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            margin: 0;
+        }
+
+        #streams {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .stream-container {
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 15px;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .stream-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Admin Live Stream View</h1>
+    <div id="streams"></div>
+
+    <script>
+        const socket = io('http://localhost:4000', { query: { id: 'admin_user_id' } }); // Adding query for admin
+        const streamsDiv = document.getElementById('streams');
+
+        socket.on('liveStreamStarted', (data) => {
+            const userId = data.userId;
+            const location = data.location;
+            const description = data.description;
+
+            console.log(`Live stream started by user: ${userId}`);
+
+            const peerConnection = new RTCPeerConnection({
+                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+            });
+
+            const streamContainer = document.createElement('div');
+            streamContainer.classList.add('stream-container');
+
+            const remoteVideo = document.createElement('video');
+            remoteVideo.autoplay = true;
+            remoteVideo.controls = true;
+            streamContainer.appendChild(remoteVideo);
+
+            const streamInfo = document.createElement('div');
+            streamInfo.classList.add('stream-info');
+            streamInfo.innerHTML = `
+                <strong>User ID:</strong> ${userId}<br>
+                <strong>Location:</strong> ${location}<br>
+                <strong>Description:</strong> ${description}
+            `;
+            streamContainer.appendChild(streamInfo);
+
+            const controlsDiv = document.createElement('div');
+            controlsDiv.classList.add('controls');
+
+            const stopButton = document.createElement('button');
+            stopButton.textContent = 'Stop Stream';
+            stopButton.onclick = () => {
+                peerConnection.close();
+                streamContainer.remove();
+                console.log(`Stream stopped for user: ${userId}`);
+            };
+            controlsDiv.appendChild(stopButton);
+
+            streamContainer.appendChild(controlsDiv);
+            streamsDiv.appendChild(streamContainer);
+
+            peerConnection.ontrack = (event) => {
+                remoteVideo.srcObject = event.streams[0];
+            };
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    console.log('Sending ICE candidate to user');
+                    socket.emit('iceCandidate', {
+                        candidate: event.candidate,
+                        target: userId,
+                        source: 'admin_user_id'
+                    });
+                }
+            };
+
+            socket.on('signal', (data) => {
+                if (data.source === userId) {
+                    console.log('Received signal (offer) from user');
+                    peerConnection.setRemoteDescription(new RTCSessionDescription(data.signal))
+                        .then(() => {
+                            if (peerConnection.remoteDescription.type === 'offer') {
+                                return peerConnection.createAnswer();
+                            }
+                        })
+                        .then(answer => peerConnection.setLocalDescription(answer))
+                        .then(() => {
+                            console.log('Sending signal back to user');
+                            socket.emit('signal', { signal: peerConnection.localDescription, target: userId, source: 'admin_user_id' });
+                        })
+                        .catch(error => console.error('Error setting remote description or creating answer:', error));
+                }
+            });
+
+            socket.on('iceCandidate', (data) => {
+                if (data.source === userId) {
+                    peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate))
+                        .catch(error => console.error('Error adding received ICE candidate from user', error));
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
