@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Incident Reporting</title>
+    <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        main {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .video-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        video {
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 640px;
+        }
+
+
+
+        .button-group {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 0 0.5rem;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        .video-container button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+        form {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        form input,
+        form textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        form button {
+            display: block;
+            width: 100%;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        Live Incident Reporting
+    </header>
+    <main>
+        <h1>Live Stream Test</h1>
+        <div class="video-container">
+            <video id="video" autoplay controls></video>
+            <div class="button-group">
+                <button id="startStream">Start Live Stream</button>
+                <button id="stopStream">Stop Live Stream</button>
+            </div>
+        </div>
+
+
+
+        <h2>Incident Report Form</h2>
+        <form id="incidentForm">
+            <label for="location">Location of Event:</label>
+            <input type="text" id="location" name="location" placeholder="Enter event location" required />
+            <label for="description">Event Description:</label>
+            <textarea id="description" name="description" placeholder="Describe the event" rows="5" required></textarea>
+        </form>
+
+
+    </main>
+    <footer>
+        &copy; 2024 Incident Reporting System. All rights reserved.
+    </footer>
+
+
+    <script>
+        // Get elements
+        const incidentForm = document.getElementById('incidentForm');
+        const startStreamButton = document.getElementById('startStream');
+        const stopStreamButton = document.getElementById('stopStream');
+        const video = document.getElementById('video');
+
+
+        incidentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const location = document.getElementById('location').value;
+            const description = document.getElementById('description').value;
+            socket.emit('reportIncident', { location, description });
+        });
+
+
+
+
+        // Dynamically set the user ID
+        const userId = localStorage.getItem('userId');
+        // Establish socket connection
+        const socket = io('http://localhost:4000', {
+            query: {
+                id: userId,
+            },
+        });
+
+
+        // Set up peer connection configuration
+        const configuration = {
+            iceServers: [
+                {
+                    urls: 'stun:stun.l.google.com:19302',
+                },
+            ],
+        };
+
+        // Initialize local stream and peer connection
+        let localStream;
+        let peerConnection;
+
+        // Handle incident form submission
+        incidentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const location = document.getElementById('location').value;
+            const description = document.getElementById('description').value;
+            socket.emit('reportIncident', {
+                location,
+                description,
+            });
+        });
+
+        // Handle start stream button click
+        startStreamButton.addEventListener('click', () => {
+            startStreamButton.disabled = true; // Disable the start stream button
+            stopStreamButton.disabled = false; // Enable the stop stream button
+            startLiveStream();
+        });
+
+
+        // Handle stop stream button click
+        stopStreamButton.addEventListener('click', () => {
+            startStreamButton.disabled = false; // Enable the start stream button
+            stopStreamButton.disabled = true; // Disable the stop stream button
+            stopPeerConnection();
+            captureAndUploadStream();
+        });
+
+
+        // Function to start live stream
+        async function startLiveStream() {
+            try {
+                // Access user's camera
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true,
+                });
+
+                // Set up video element
+                video.srcObject = localStream;
+
+                // Create peer connection
+                peerConnection = new RTCPeerConnection(configuration);
+
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log('Sending ICE candidate to admin');
+                        socket.emit('iceCandidate', {
+                            candidate: event.candidate,
+                            target: 'admin_user_id',
+                            source: userId,
+                        });
+                    }
+                };
+                // Handle incoming signals from admin
+                socket.on('signal', (data) => {
+                    if (data.source === 'admin_user_id') {
+                        console.log('Received signal from admin');
+                        peerConnection.setRemoteDescription(new RTCSessionDescription(data.signal)).catch((error) => {
+                            console.error('Error setting remote description from admin:', error);
+                        });
+                    }
+                });
+
+                // Handle incoming ICE candidates from admin
+                socket.on('iceCandidate', (data) => {
+                    if (data.source === 'admin_user_id') {
+                        console.log('Received ICE candidate from admin');
+                        peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate)).catch((error) => {
+                            console.error('Error adding received ice candidate from admin:', error);
+                        });
+                    }
+                });
+                // Add tracks to peer connection
+                localStream.getTracks().forEach((track) => {
+                    peerConnection.addTrack(track, localStream);
+                    console.log('Track:', track.kind, 'Enabled:', track.enabled, 'Muted:', track.muted);
+                });
+
+                // Emit start live stream event
+                const data = {
+                    userId: userId,
+                    location: document.getElementById('location').value,
+                    description: document.getElementById('description').value,
+                };
+                socket.emit('startLiveStream', data);
+
+                // Create offer and handle signaling
+                peerConnection
+                    .createOffer()
+                    .then((offer) => peerConnection.setLocalDescription(offer))
+                    .then(() => {
+                        console.log('Sending offer to admin');
+                        socket.emit('signal', {
+                            signal: peerConnection.localDescription,
+                            target: 'admin_user_id',
+                            source: userId,
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error creating offer:', error);
+                    });
+
+            } catch (error) {
+                console.error('Error starting live stream:', error);
+            }
+        }
+
+        // Function to stop peer connection
+        function stopPeerConnection() {
+            if (peerConnection) {
+                // Stop all senders' tracks
+                peerConnection.getSenders().forEach((sender) => {
+                    if (sender.track) {
+                        sender.track.stop();
+                        // Stop the media track
+                    }
+                });
+
+                // Close the peer connection
+                peerConnection.close();
+                peerConnection = null;
+                // Reset the peer connection for future streams
+                console.log('Peer connection closed and reset.');
+
+            }
+        }
+
+
+        // Function to capture and upload stream
+        function captureAndUploadStream() {
+            // Check if localStream is defined and active
+            if (localStream && localStream.active) {
+                const mediaRecorder = new MediaRecorder(localStream);
+                const chunks = [];
+
+                mediaRecorder.ondataavailable = function (event) {
+                    if (event.data.size > 0) {
+                        chunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function () {
+                    const videoBlob = new Blob(chunks, { type: 'video/webm' });
+                    const formData = new FormData();
+                    formData.append('video', videoBlob, 'livestream.webm');
+
+                    fetch('http://localhost:4000/uploadVideoStream', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            console.log('Video uploaded successfully:', data);
+                        })
+                        .catch((error) => {
+                            console.error('Error uploading video:', error);
+                        });
+                };
+
+                // Start recording and stop after 10 seconds for testing (this can be modified)
+                mediaRecorder.start();
+                setTimeout(() => {
+                    mediaRecorder.stop();
+                }, 10000);
+
+            } else {
+                console.error('Local stream is not active or invalid. Check if getUserMedia was successful.');
+                console.log('localStream:', localStream);
+                // Log the localStream status
+            }
+        }
+    </script>
+</body>
+
+</html>

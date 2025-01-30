@@ -1,0 +1,53 @@
+
+<!-- report-incident.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report an Incident</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Report an Incident</h1>
+    <form id="report-incident-form">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea><br><br>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location"><br><br>
+        <button id="submit-incident-btn">Submit</button>
+    </form>
+    <script>
+        const reportIncidentForm = document.getElementById('report-incident-form');
+
+reportIncidentForm.addEventListener('submit', reportIncident);
+
+async function reportIncident(event) {
+    event.preventDefault();
+    const description = document.getElementById('description').value;
+    const location = document.getElementById('location').value;
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/incidents', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ description, location }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+        // Redirect to home page
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+    </script>
+</body>
+</html>

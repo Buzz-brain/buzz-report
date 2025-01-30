@@ -29,10 +29,30 @@ mongoose
 
 // Middlewares
 app.use(express.json()); // To parse incoming JSON requests
+app.set('view engine', 'ejs');
 
-// Basic route
+
+// Home Route
 app.get('/', (req, res) => {
-  res.send('Incident Reporting System API');
+  res.render('index');
+});
+// Home Route
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+// Home Route
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+// Home Route
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard');
+});
+
+
+// Home Route
+app.get('/admin', (req, res) => {
+  res.render('admin');
 });
 
 const incidentRoutes = require('./routes/incidentRoutes');
@@ -148,7 +168,7 @@ io.on('connection', (socket) => {
   //       console.error('Error uploading video or saving incident:', error);
   //       socket.emit('uploadError', { message: 'Failed to upload video or save incident.' });
   //   }
-  // });
+  // })example_user_id
 
   const multer = require('multer');
   const upload = multer(); // Multer to handle file uploads
@@ -190,11 +210,8 @@ io.on('connection', (socket) => {
 });
 
 
-
-
-
 // Start the server
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4300;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

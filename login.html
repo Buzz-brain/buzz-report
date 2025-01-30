@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IncidentWatch - Real-time Incident Reporting &amp; Live Streaming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css" rel="stylesheet" />
+    <script
+        src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
+    <script src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js" data-color="#000000"
+        data-border-radius="small"></script>
+</head>
+
+<body class="bg-gray-50">
+    <nav class="bg-white shadow">
+        <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img class="h-8 w-auto" src="https://ai-public.creatie.ai/gen_page/logo_placeholder.png"
+                            alt="IncidentWatch" />
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#"
+                            class="border-custom text-custom inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Home
+                        </a>
+                        <a href="#"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Features
+                        </a>
+                        <a href="#"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            About
+                        </a>
+                        <a href="#"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Contact
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+                    <a href="#" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Sign
+                        in</a>
+                    <a href="#" class="bg-custom text-white !rounded-button px-4 py-2 text-sm font-medium">Get
+                        Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <div class="bg-gray-100 min-h-screen">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="hidden">
+                        <div class="bg-white shadow rounded-lg p-4">
+                            <div class="flex items-center space-x-4 mb-6"><img
+                                    src="https://ai-public.creatie.ai/gen_page/avatar_placeholder.png" alt="Profile"
+                                    class="w-12 h-12 rounded-full" />
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">John Doe</h3>
+                                    <p class="text-sm text-gray-500">Emergency Responder</p>
+                                </div>
+                            </div>
+                            <nav class="space-y-2"><a href="#"
+                                    class="bg-custom text-white group flex items-center px-3 py-2 text-sm font-medium rounded-md"><i
+                                        class="fas fa-home mr-3"></i>Dashboard</a><a href="#"
+                                    class="text-gray-600 hover:bg-gray-50 group flex items-center px-3 py-2 text-sm font-medium rounded-md"><i
+                                        class="fas fa-video mr-3"></i>My Streams</a><a href="#"
+                                    class="text-gray-600 hover:bg-gray-50 group flex items-center px-3 py-2 text-sm font-medium rounded-md"><i
+                                        class="fas fa-exclamation-circle mr-3"></i>Incidents</a><a href="#"
+                                    class="text-gray-600 hover:bg-gray-50 group flex items-center px-3 py-2 text-sm font-medium rounded-md"><i
+                                        class="fas fa-chart-bar mr-3"></i>Analytics</a><a href="#"
+                                    class="text-gray-600 hover:bg-gray-50 group flex items-center px-3 py-2 text-sm font-medium rounded-md"><i
+                                        class="fas fa-cog mr-3"></i>Settings</a></nav>
+                        </div>
+                    </div>
+                    <div class="w-full">
+                        <div class="bg-white shadow rounded-lg mb-6 p-4">
+                            <div class="grid grid-cols-1 gap-6">
+                                <div class="col-span-2">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div class="text-white text-center">
+                                            <div
+                                                class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                                <div class="text-white text-center"><i
+                                                        class="fas fa-video text-2xl mb-2"></i>
+                                                    <p>Stream 1</p>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                                <div class="text-white text-center"><i
+                                                        class="fas fa-video text-2xl mb-2"></i>
+                                                    <p>Stream 2</p>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                                <div class="text-white text-center"><i
+                                                        class="fas fa-video text-2xl mb-2"></i>
+                                                    <p>Stream 3</p>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                                <div class="text-white text-center"><i
+                                                        class="fas fa-video text-2xl mb-2"></i>
+                                                    <p>Stream 4</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                            <div class="text-white text-center"><i
+                                                    class="fas fa-video text-2xl mb-2"></i>
+                                                <p>Stream 5</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                            <div class="text-white text-center"><i
+                                                    class="fas fa-video text-2xl mb-2"></i>
+                                                <p>Stream 6</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                            <div class="text-white text-center"><i
+                                                    class="fas fa-video text-2xl mb-2"></i>
+                                                <p>Stream 7</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                            <div class="text-white text-center"><i
+                                                    class="fas fa-video text-2xl mb-2"></i>
+                                                <p>Stream 8</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="bg-gray-800 rounded-lg aspect-video flex items-center justify-center">
+                                            <div class="text-white text-center"><i
+                                                    class="fas fa-video text-2xl mb-2"></i>
+                                                <p>Stream 9</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="lg:col-span-1">
+                                    <div class="space-y-4">
+                                        <div class="bg-red-50 p-4 rounded-lg">
+                                            <h3 class="font-medium mb-2">Emergency Contacts</h3>
+                                            <div class="space-y-2"><button
+                                                    class="w-full bg-red-600 text-white py-2 px-4 rounded-lg flex items-center justify-center"><i
+                                                        class="fas fa-phone-alt mr-2"></i>Call Emergency
+                                                    (911)</button><button
+                                                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center justify-center"><i
+                                                        class="fas fa-hospital-alt mr-2"></i>Medical
+                                                    Services</button><button
+                                                    class="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg flex items-center justify-center"><i
+                                                        class="fas fa-fire mr-2"></i>Fire Department</button></div>
+                                        </div>
+                                        <div class="bg-gray-50 p-4 rounded-lg">
+                                            <h3 class="font-medium mb-2">Incident Details</h3>
+                                            <form class="space-y-4">
+                                                <div><label
+                                                        class="block text-sm font-medium text-gray-700">Description</label><textarea
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                                        rows="3"></textarea></div>
+                                                <div><label
+                                                        class="block text-sm font-medium text-gray-700">Location</label><input
+                                                        type="text"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                                                </div><button type="submit"
+                                                    class="w-full bg-custom text-white py-2 px-4 rounded-lg">Submit
+                                                    Report</button>
+                                            </form>
+                                        </div>
+                                        <div class="bg-white p-4 rounded-lg mt-4">
+                                            <h3 class="font-medium mb-4">Incident Status Management</h3>
+                                            <div class="space-y-3">
+                                                <div
+                                                    class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                                                    <div><span class="font-medium">Incident #1234</span>
+                                                        <p class="text-sm text-gray-600">Traffic Accident</p>
+                                                    </div><select class="rounded-md border-gray-300">
+                                                        <option>Pending</option>
+                                                        <option>In Progress</option>
+                                                        <option>Resolved</option>
+                                                    </select>
+                                                </div>
+                                                <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                                                    <div><span class="font-medium">Incident #1235</span>
+                                                        <p class="text-sm text-gray-600">Fire Emergency</p>
+                                                    </div><select class="rounded-md border-gray-300">
+                                                        <option>In Progress</option>
+                                                        <option>Pending</option>
+                                                        <option>Resolved</option>
+                                                    </select>
+                                                </div>
+                                                <div
+                                                    class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                                    <div><span class="font-medium">Incident #1236</span>
+                                                        <p class="text-sm text-gray-600">Medical Emergency</p>
+                                                    </div><select class="rounded-md border-gray-300">
+                                                        <option>Resolved</option>
+                                                        <option>Pending</option>
+                                                        <option>In Progress</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md my-8">
+            <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+            <form class="space-y-4">
+                <div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-custom focus:ring-custom" />
+                </div>
+                <div><label class="block text-sm font-medium text-gray-700">Password</label><input type="password"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-custom focus:ring-custom" />
+                </div><button type="submit"
+                    class="w-full bg-custom text-white py-2 px-4 rounded-lg hover:bg-opacity-90">Sign In</button>
+            </form>
+        </div>
+        <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md my-8">
+            <h2 class="text-2xl font-bold mb-6 text-center">Register</h2>
+            <form class="space-y-4">
+                <div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-custom focus:ring-custom" />
+                </div>
+                <div><label class="block text-sm font-medium text-gray-700">Password</label><input type="password"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-custom focus:ring-custom" />
+                </div>
+                <div><label class="block text-sm font-medium text-gray-700">Confirm Password</label><input
+                        type="password"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-custom focus:ring-custom" />
+                </div><button type="submit"
+                    class="w-full bg-custom text-white py-2 px-4 rounded-lg hover:bg-opacity-90">Create Account</button>
+            </form>
+        </div>
+    </main>
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+            <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Product</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Features</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Pricing</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Security</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Company</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">About</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Blog</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Careers</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Support</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Help Center</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Contact</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Status</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Legal</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Privacy</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Terms</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-base text-gray-300 hover:text-white">Cookie Policy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-8">
+                <p class="text-base text-gray-400 xl:text-center">
+                    © 2024 IncidentWatch. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
